@@ -1,0 +1,1 @@
+"..\wyam\src\clients\wyam\bin\release\wyam.exe" build --watch --preview  -a "..\wyam\src\**\bin\Release\*.dll" -r "docs -i" -t "..\wyam\themes\docs\samson" --verbose --verbose

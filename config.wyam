@@ -1,0 +1,27 @@
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
+
+// Customize your settings and add new ones here
+Settings[Keys.Host] = "host.com";
+Settings[DocsKeys.Title] = "My Docs";
+
+string apiKey = "nope";
+
+Func<IExecutionContext, YouTubeService, object> request = (context, youtube) => { 
+    var query = youtube.PlaylistItems.List("snippet");
+
+    query.PlaylistId = "PLM9jdoijSdhgiRR9Bd8KkLggD0LZK5K3C";
+    query.MaxResults = 30;
+
+    return query.ExecuteAsync();
+};
+
+Pipelines.InsertBefore(DocsPipelines.Code, "SearchYouTube", 
+    Trace(YouTube(apiKey).WithRequest("SearchYouTube", request))
+);
+
+Pipelines.InsertAfter("SearchYouTube", "RenderYouTube",
+    Trace(Documents("SearchYouTube")),
+    Razor().WithLayout("/_Videos.cshtml"),
+    WriteFiles()
+);
